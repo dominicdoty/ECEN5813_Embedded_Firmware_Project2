@@ -1,1 +1,30 @@
 Circular Buffer Questions:
+1. Is your implementation thread safe?
+	My implementation is somewhat thread safe, as long as the two threads are always one adding and the 
+other removing. This works because the add and remove functions will only ever interact with the buffer at 
+separate parts of the buffer. There is a potential race condition however where the buffer may report that 
+it is empty or full erroniously, if another thread is in the process of adding or removing from the buffer 
+respectively. My "number_of_elements" function is thread safe but may not always be accurate due to 
+multithreading.
+
+2. What potential issues exist if the same buffer is used by both interrupt and non-interrupt code? How can 
+these issues be addressed?
+	As mentioned above, the buffer may report that it is empty when it has one item in it if the 
+addition is the function that is interrupted. Similarly, it may report full if it interrupts a removal. In 
+most applications this is not an issue as the buffer should never be sized to fill up completely, and an 
+erronious empty buffer will be serviced in the next loop of the program.
+Another issue is simultaneous access of the buffer structure. The head, tail, and buffer iteslf need to be 
+declared as volatile to ensure that they are always read from memory and not held in CPU registers. 
+
+3. How could you test these issues?
+	One method would be to test it practically by running the code with random interrupts triggering 
+throughout addition and removal from the buffer.
+	Another more deterministic method would be to use "goto" statements to simulate interrupts occuring 
+during the run of add or remove functions (ie "goto fakeISR"). That way fake interrupts could be simulated 
+occuring between every instruction, or at key points determined by the tester.
+
+NOTE: For the extra credit, I did not implement #1, I did implement #2, and I did not implement #3. It 
+seems that the way to do this is likely to include a flag for the buffer being full. As this is a char 
+buffer, adding the flag uses up the one byte that you gain by adding the flag (flag lets you use the last 
+slot in the buffer, but the flag is 1 byte, same size as that last slot). So this didn't seem like a 
+worthwhile addition.

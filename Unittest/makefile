@@ -4,7 +4,7 @@
 CC = gcc
 INCLUDE = -I../include -Icunit_headers
 LIBRARIES = -llibcunit
-SOURCE = ../source/ring_buffer.c ring_buffer_test.c
+SOURCE = ../source/ring_buffer.c unittest.c
 CFLAGS = $(INCLUDE) $(LIBRARIES) -Wall
 BINNAME = ring_test
 BUILDDIR = build
