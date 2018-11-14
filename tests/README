@@ -1,0 +1,5 @@
+Tests are contained in this folder
+
+Running make will build the test executable
+
+Running make test will build the test executable and run it
