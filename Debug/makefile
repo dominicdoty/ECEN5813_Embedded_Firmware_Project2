@@ -29,25 +29,25 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: POE_Project_2.axf
+all: ECEN5813_Embedded_Firmware_Project2.axf
 
 # Tool invocations
-POE_Project_2.axf: $(OBJS) $(USER_OBJS)
+ECEN5813_Embedded_Firmware_Project2.axf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU Linker'
-	arm-none-eabi-gcc -nostdlib -Xlinker -Map="POE_Project_2.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -mcpu=cortex-m0plus -mthumb -T "POE_Project_2_Debug.ld" -o "POE_Project_2.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -nostdlib -Xlinker -Map="ECEN5813_Embedded_Firmware_Project2.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -mcpu=cortex-m0plus -mthumb -T "POE_Project_2_Debug.ld" -o "ECEN5813_Embedded_Firmware_Project2.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 	$(MAKE) --no-print-directory post-build
 
 # Other Targets
 clean:
-	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) POE_Project_2.axf
+	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) ECEN5813_Embedded_Firmware_Project2.axf
 	-@echo ' '
 
 post-build:
 	-@echo 'Performing post-build steps'
-	-arm-none-eabi-size "POE_Project_2.axf"; # arm-none-eabi-objcopy -v -O binary "POE_Project_2.axf" "POE_Project_2.bin" ; # checksum -p MKL25Z128xxx4 -d "POE_Project_2.bin";
+	-arm-none-eabi-size "ECEN5813_Embedded_Firmware_Project2.axf"; # arm-none-eabi-objcopy -v -O binary "ECEN5813_Embedded_Firmware_Project2.axf" "ECEN5813_Embedded_Firmware_Project2.bin" ; # checksum -p MKL25Z128xxx4 -d "ECEN5813_Embedded_Firmware_Project2.bin";
 	-@echo ' '
 
 .PHONY: all clean dependents post-build

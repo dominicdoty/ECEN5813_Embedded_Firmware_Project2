@@ -6,7 +6,11 @@ source/POE_Project_2.o source/POE_Project_2.d: ../source/POE_Project_2.c \
  ../CMSIS/MKL25Z4_features.h ../drivers/fsl_clock.h \
  ../drivers/fsl_common.h ../drivers/fsl_gpio.h ../board/peripherals.h \
  ../board/pin_mux.h ../board/clock_config.h ../CMSIS/MKL25Z4.h \
- ../utilities/fsl_debug_console.h ../include/ring_buffer.h
+ ../utilities/fsl_debug_console.h ../include/char_counter.h \
+ ../include/output_generator.h ../include/ring_buffer.h \
+ ../include/char_counter.h ../include/ring_buffer.h \
+ ../include/uart_adapter.h ../include/uart_handler.h \
+ ../include/uart_adapter.h
 
 ../board/board.h:
 
@@ -46,4 +50,18 @@ source/POE_Project_2.o source/POE_Project_2.d: ../source/POE_Project_2.c \
 
 ../utilities/fsl_debug_console.h:
 
+../include/char_counter.h:
+
+../include/output_generator.h:
+
 ../include/ring_buffer.h:
+
+../include/char_counter.h:
+
+../include/ring_buffer.h:
+
+../include/uart_adapter.h:
+
+../include/uart_handler.h:
+
+../include/uart_adapter.h:

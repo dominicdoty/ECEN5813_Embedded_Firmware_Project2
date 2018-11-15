@@ -21,9 +21,9 @@ static bool is_pow_two(uint16_t number)
 }
 
 
-enum ring_error ring_init(ring_buffer_struct* rbs, char* buffer, uint16_t size)
+ring_error ring_init(ring_buffer_struct* rbs, unsigned char* buffer, uint16_t size)
 {
-	enum ring_error ret = RING_SUCCESS;
+	ring_error ret = RING_SUCCESS;
 
 	if(rbs == NULL)
 	{
@@ -51,9 +51,9 @@ enum ring_error ring_init(ring_buffer_struct* rbs, char* buffer, uint16_t size)
 }
 
 
-enum ring_error ring_add(ring_buffer_struct* rbs, char addition)
+ring_error ring_add(ring_buffer_struct* rbs, unsigned char addition)
 {
-	enum ring_error ret = RING_SUCCESS;
+	ring_error ret = RING_SUCCESS;
 
 	if(rbs == NULL)
 	{
@@ -62,22 +62,31 @@ enum ring_error ring_add(ring_buffer_struct* rbs, char addition)
 	}
 	else
 	{
-		rbs->buffer[rbs->head] = addition;			// Add thing to buffer
-		rbs->head = (rbs->head + 1) & rbs->mask;	// Increment the head / wrap
-		if(rbs->head == rbs->tail)					// Check for full buffer
-		{
-			rbs->head = (rbs->head - 1) & rbs->mask;
-			ret = RING_FULL;
-		}
+		ret = ring_add_unsafe(rbs, addition);
+	}
+
+	return ret;
+}
+
+ring_error ring_add_unsafe(ring_buffer_struct* rbs, unsigned char addition)
+{
+	ring_error ret = RING_SUCCESS;
+
+	rbs->buffer[rbs->head] = addition;			// Add thing to buffer
+	rbs->head = (rbs->head + 1) & rbs->mask;	// Increment the head / wrap
+	if(rbs->head == rbs->tail)					// Check for full buffer
+	{
+		rbs->head = (rbs->head - 1) & rbs->mask;
+		ret = RING_FULL;
 	}
 
 	return ret;
 }
 
 
-enum ring_error ring_remove(ring_buffer_struct* rbs, char* removal)
+ring_error ring_remove(ring_buffer_struct* rbs, unsigned char* removal)
 {
-	enum ring_error ret = RING_SUCCESS;
+	ring_error ret = RING_SUCCESS;
 
 	if(rbs == NULL)
 	{
@@ -91,24 +100,32 @@ enum ring_error ring_remove(ring_buffer_struct* rbs, char* removal)
 	}
 	else
 	{
-		if(rbs->head == rbs->tail)					// Check if the buffer is empty
-		{
-			ret = RING_EMPTY;
-		}
-		else
-		{
-		*removal = rbs->buffer[rbs->tail];			// Remove the thing
-		rbs->tail = (rbs->tail + 1) & rbs->mask; 	// Increment the tail and wrap
-		}
+		ret = ring_remove_unsafe(rbs, removal);
 	}
 
 	return ret;
 }
 
-
-enum ring_error ring_element_count(ring_buffer_struct* rbs, uint16_t* count)
+ring_error ring_remove_unsafe(ring_buffer_struct* rbs, unsigned char* removal)
 {
-	enum ring_error ret = RING_SUCCESS;
+	ring_error ret = RING_SUCCESS;
+
+	if(rbs->head == rbs->tail)					// Check if the buffer is empty
+	{
+		ret = RING_EMPTY;
+	}
+	else
+	{
+		*removal = rbs->buffer[rbs->tail];			// Remove the thing
+		rbs->tail = (rbs->tail + 1) & rbs->mask; 	// Increment the tail and wrap
+	}
+
+	return ret;
+}
+
+ring_error ring_element_count(ring_buffer_struct* rbs, uint16_t* count)
+{
+	ring_error ret = RING_SUCCESS;
 
 	if(rbs == NULL)
 	{
@@ -122,11 +139,23 @@ enum ring_error ring_element_count(ring_buffer_struct* rbs, uint16_t* count)
 	}
 	else
 	{
-		// Calculate the number of elements
-		// head - tail, if negative, add size of ring (mask+1)
-		// need to check that this doesn't have over/underflow issues
-		*count = (rbs->head - rbs->tail) < 0 ? rbs->head - rbs->tail + rbs->mask + 1 : rbs->head - rbs->tail + rbs->mask;
+		ring_element_count_unsafe(rbs, count);
 	}
+
+	return ret;
+}
+
+ring_error ring_element_count_unsafe(ring_buffer_struct* rbs, uint16_t* count)
+{
+	ring_error ret = RING_SUCCESS;
+
+	// Calculate the number of elements
+	// head - tail, if negative, add size of ring (mask+1)
+	// need to check that this doesn't have over/underflow issues
+	uint32_t temp = (rbs->head - rbs->tail) < 0 ?
+					rbs->head - rbs->tail + rbs->mask + 1 :
+					rbs->head - rbs->tail;
+	*count = (uint16_t)temp;
 
 	return ret;
 }

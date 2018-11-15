@@ -1,5 +1,13 @@
 Tests are contained in this folder
 
-Running make will build the test executable
+Running make with no args will build and run all tests
 
-Running make test will build the test executable and run it
+Running make with args thing_test will build that test
+	ring_test
+	char_test
+
+Running make with args thing_test_rn will build and run that test
+	ring_test_run
+	ring_test_run
+
+Make clean deletes all build stuff

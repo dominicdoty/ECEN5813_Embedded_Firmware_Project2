@@ -5,21 +5,30 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../source/POE_Project_2.c \
+../source/char_counter.c \
 ../source/mtb.c \
+../source/output_generator.c \
 ../source/ring_buffer.c \
-../source/semihost_hardfault.c 
+../source/semihost_hardfault.c \
+../source/uart_handler.c 
 
 OBJS += \
 ./source/POE_Project_2.o \
+./source/char_counter.o \
 ./source/mtb.o \
+./source/output_generator.o \
 ./source/ring_buffer.o \
-./source/semihost_hardfault.o 
+./source/semihost_hardfault.o \
+./source/uart_handler.o 
 
 C_DEPS += \
 ./source/POE_Project_2.d \
+./source/char_counter.d \
 ./source/mtb.d \
+./source/output_generator.d \
 ./source/ring_buffer.d \
-./source/semihost_hardfault.d 
+./source/semihost_hardfault.d \
+./source/uart_handler.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

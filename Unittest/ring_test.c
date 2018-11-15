@@ -14,7 +14,7 @@
 #define SEVENTEEN	17
 
 ring_buffer_struct ringo;
-char buffer[SIXTEEN];
+unsigned char buffer[SIXTEEN];
 
 
 void test_ring_init()
@@ -46,7 +46,7 @@ void test_ring_add()
 void test_ring_remove()
 {
 	/* NULL POINTERS */
-	char temp = 0;
+	unsigned char temp = 0;
 	CU_ASSERT_EQUAL(ring_remove(NULL, &temp), RING_NULL_PTR);					// Test NULL struct ptr
 	CU_ASSERT_EQUAL(ring_remove(&ringo, NULL), RING_NULL_PTR);					// Test NULL return ptr
 }
@@ -57,6 +57,16 @@ void test_ring_element_count()
 	uint16_t temp = 0;
 	CU_ASSERT_EQUAL(ring_element_count(NULL, &temp), RING_NULL_PTR);			// Test NULL struct ptr
 	CU_ASSERT_EQUAL(ring_element_count(&ringo, NULL), RING_NULL_PTR);			// Test NULL return ptr
+
+	/* RING COUNTS WITH 0 INDEX */
+	ring_add(&ringo, 'A');
+	ring_add(&ringo, 'A');
+	ring_add(&ringo, 'A');
+	ring_element_count(&ringo, &temp);
+	CU_ASSERT_EQUAL(temp, 3)
+
+	/* RESET RING BUFFER */
+	CU_ASSERT_EQUAL(ring_init(&ringo, buffer, SIXTEEN), RING_SUCCESS);			// Good init
 }
 
 void test_add_remove_count()
@@ -69,14 +79,14 @@ void test_add_remove_count()
 	CU_ASSERT_EQUAL(ringo.mask, SIXTEEN - 1);
 
 	/* ADD TILL FULL */
-	for(char i = 'B'; i < 'B'+14; i++)
+	for(unsigned char i = 'B'; i < 'B'+14; i++)
 	{
 		CU_ASSERT_EQUAL(ring_add(&ringo, i), RING_SUCCESS);
 	}
 	CU_ASSERT_EQUAL(ring_add(&ringo, 'X'), RING_FULL);
 
 	/* CONFIRM A SINGLE REMOVAL */
-	char remove = 0;
+	unsigned char remove = 0;
 	CU_ASSERT_EQUAL(ring_remove(&ringo, &remove), RING_SUCCESS);
 	CU_ASSERT_EQUAL(remove, 'A');
 	CU_ASSERT_EQUAL(&ringo.buffer[0], &buffer[0]);
@@ -115,7 +125,7 @@ int main()
 		return CU_get_error();
 
 	/* add a suite to the registry */
-	pSuite = CU_add_suite("Suite_1", NULL, NULL);
+	pSuite = CU_add_suite("Ring Buffer Tests", NULL, NULL);
 	if (NULL == pSuite)
 	{
 		CU_cleanup_registry();

@@ -39,10 +39,13 @@
 #include "clock_config.h"
 #include "MKL25Z4.h"
 #include "fsl_debug_console.h"
-/* TODO: insert other include files here. */
+/* APPLICATION HEADERS */
+#include "char_counter.h"
+#include "output_generator.h"
 #include "ring_buffer.h"
+#include "uart_adapter.h"
+#include "uart_handler.h"
 
-/* TODO: insert other definitions and declarations here. */
 
 /*
  * @brief   Application entry point.
