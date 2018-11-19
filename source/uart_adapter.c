@@ -20,6 +20,10 @@ uart_error uart_init(uart_config* init)
 	{
 		ret = UART_NULL_PORT;
 	}
+	else if(init->port_ptr != (uint32_t*)UART0_BASE)
+	{
+
+	}
 	else if((init->parity_mode > 3 ) ||			//check parity_mode valid
 			(init->parity_mode == 1 ))
 	{
@@ -45,8 +49,21 @@ uart_error uart_init(uart_config* init)
 	else
 	{
 		// Calculate the clock divisor to achieve the baud rate requested
-		baud_clock_div = init->clock_freq / (init->baudrate * 16);	//NOTE THIS IS THE SAME AS THE NXP UART DRIVER
+		uint16_t baud_clock_div = init->clock_freq / (init->baudrate * 16);	//NOTE THIS IS THE SAME AS THE NXP UART DRIVER
 
+		// Enable the UART Clock
+		if(init->port_ptr == (uint32_t*)UART0_BASE)
+		{
+			CLOCK_EnableClock(kCLOCK_Uart0);
+		}
+		else if(init->port_ptr == (uint32_t*)UART1_BASE)
+		{
+			CLOCK_EnableClock(kCLOCK_Uart1);
+		}
+		else if(init->port_ptr == (uint32_t*)UART2_BASE)
+		{
+			CLOCK_EnableClock(kCLOCK_Uart2);
+		}
 
 		// do some init tasks
 	}
@@ -57,10 +74,14 @@ uart_error uart_transmit(int8_t* uart_reg, char data)
 {
 	uart_error ret = UART_SUCCESS;
 	//needs to return some indicator if transmission was successful or not
+
+	return ret;
 }
 
 uart_error uart_receive(int8_t* uart_reg, char* data)
 {
 	uart_error ret = UART_SUCCESS;
 	//need to return some indicator if receive was successful or not
+
+	return ret;
 }

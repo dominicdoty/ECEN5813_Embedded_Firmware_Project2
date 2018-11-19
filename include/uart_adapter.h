@@ -12,6 +12,7 @@
 #include "stddef.h"
 #include "stdbool.h"
 #include "stdint.h"
+#include "fsl_clock.h"
 
 // UART DEFINES
 #define UART_PARITY_DISABLED	0x0U
@@ -20,12 +21,12 @@
 #define UART_ONE_STOP_BIT		0x0U
 #define UART_TWO_STOP_BIT		0x1U
 
-
 // UART VARIABLES
 typedef struct
 {
-	uint8_t* port_ptr;
+	uint32_t* port_ptr;
 	uint32_t clock_freq;
+	clock_ip_name_t clock_name;
 	uint32_t baudrate;
 	uint8_t parity_mode;
 	uint8_t stop_bit;
