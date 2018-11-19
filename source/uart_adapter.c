@@ -7,56 +7,60 @@
 
 #include "uart_adapter.h"
 
-/*
-// UART DEFINES
-#define UART_PARITY_DISABLED	0x0U
-#define UART_PARITY_EVEN		0x2U
-#define UART_PARITY_ODD			0x3U
-#define UART_ONE_STOP_BIT		0x0U
-#define UART_TWO_STOP_BIT		0x1U
-
-
-// UART VARIABLES
-typedef struct
-{
-	uint8_t* port_ptr;
-	uint32_t clock_freq;
-	uint32_t baudrate;
-	uint8_t parity_mode;
-	uint8_t stop_bit;
-	bool enable_tx;
-	bool enable_rx;
-}uart_config;
-
-// NEED REAL ERRORS
-typedef enum {UART_SUCCESS, UART_FAILURE}uart_error;
-*/
 // UART FUNCTIONS
 uart_error uart_init(uart_config* init)
 {
 	uart_error ret = UART_SUCCESS;
-	if( (init == NULL) ||					//check for non-void init
-		(init->port_ptr == NULL) ||			//check for non-void port pointer
-		(init->clock_freq != badnumber) ||	//check clock frequency valid
-		(init->baudrate == badnumber) ||	//check baudrate valid
-		(init->parity_mode <=  ) ||	//check parity_mode valid
-		(init->stop_bit <= UART_TWO_STOP_BIT) ) 	//check stop_bit valid
+
+	if(init == NULL)							//check for non-void init
 	{
-		ret = UART_FAILURE;
+		ret = UART_NULL_PTR;
+	}
+	else if(init->port_ptr == NULL)				//check for non-void port pointer
+	{
+		ret = UART_NULL_PORT;
+	}
+	else if((init->parity_mode > 3 ) ||			//check parity_mode valid
+			(init->parity_mode == 1 ))
+	{
+		ret = UART_ILLEGAL_PARITY;
+	}
+	else if(init->stop_bit > UART_TWO_STOP_BIT)	//check stop_bit valid
+	{
+		ret = UART_ILLEGAL_STOPBIT;
+	}
+	else if((init->clock_freq != 32000)		||	//check clock frequency valid
+			(init->clock_freq != 4000000)	||
+			(init->clock_freq != EXTAL0)	||
+			(init->clock_freq != XTAL0)		||
+			(init->clock_freq != EXTAL0/2)	||
+			(init->clock_freq != XTAL0/2))
+	{
+		ret = UART_ILLEGAL_FREQUENCY;
+	}
+	else if(init->clock_freq / (init->baudrate * 16) == 0)	//check baudrate valid
+	{
+		ret = UART_BAUDRATE_TOO_HIGH_FOR_CLOCK;
 	}
 	else
 	{
+		// Calculate the clock divisor to achieve the baud rate requested
+		baud_clock_div = init->clock_freq / (init->baudrate * 16);	//NOTE THIS IS THE SAME AS THE NXP UART DRIVER
+
+
 		// do some init tasks
 	}
 	return ret;
 }
 
-void uart_transmit(int8_t* uart_reg, char data)
+uart_error uart_transmit(int8_t* uart_reg, char data)
 {
-
+	uart_error ret = UART_SUCCESS;
+	//needs to return some indicator if transmission was successful or not
 }
 
-char uart_receive(int8_t* uart_reg)
+uart_error uart_receive(int8_t* uart_reg, char* data)
 {
-
+	uart_error ret = UART_SUCCESS;
+	//need to return some indicator if receive was successful or not
 }

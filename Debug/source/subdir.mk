@@ -10,6 +10,7 @@ C_SRCS += \
 ../source/output_generator.c \
 ../source/ring_buffer.c \
 ../source/semihost_hardfault.c \
+../source/uart_adapter.c \
 ../source/uart_handler.c 
 
 OBJS += \
@@ -19,6 +20,7 @@ OBJS += \
 ./source/output_generator.o \
 ./source/ring_buffer.o \
 ./source/semihost_hardfault.o \
+./source/uart_adapter.o \
 ./source/uart_handler.o 
 
 C_DEPS += \
@@ -28,6 +30,7 @@ C_DEPS += \
 ./source/output_generator.d \
 ./source/ring_buffer.d \
 ./source/semihost_hardfault.d \
+./source/uart_adapter.d \
 ./source/uart_handler.d 
 
 

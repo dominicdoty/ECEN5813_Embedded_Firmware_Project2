@@ -8,6 +8,11 @@
 #ifndef UART_ADAPTER_H_
 #define UART_ADAPTER_H_
 
+// UART INCLUDES
+#include "stddef.h"
+#include "stdbool.h"
+#include "stdint.h"
+
 // UART DEFINES
 #define UART_PARITY_DISABLED	0x0U
 #define UART_PARITY_EVEN		0x2U
@@ -29,13 +34,13 @@ typedef struct
 }uart_config;
 
 // NEED REAL ERRORS
-typedef enum {UART_SUCCESS, UART_FAILURE}uart_error;
+typedef enum {UART_SUCCESS, UART_NULL_PTR, UART_NULL_PORT, UART_ILLEGAL_PARITY, UART_ILLEGAL_STOPBIT, UART_ILLEGAL_FREQUENCY, UART_BAUDRATE_TOO_HIGH_FOR_CLOCK}uart_error;
 
 // UART FUNCTIONS
 uart_error uart_init(uart_config* init);
 
-void uart_transmit(int8_t* uart_reg, char data);
+uart_error uart_transmit(int8_t* uart_reg, char data);
 
-char uart_receive(int8_t* uart_reg);
+uart_error uart_receive(int8_t* uart_reg, char* data);
 
 #endif /* UART_ADAPTER_H_ */

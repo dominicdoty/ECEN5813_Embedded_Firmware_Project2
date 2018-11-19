@@ -1,0 +1,6 @@
+#GITIGNORE
+
+# Ignore the MCUXpresso Debug Folder
+
+Debug/
+*.exe
