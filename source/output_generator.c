@@ -73,14 +73,16 @@ output_error output_single_char_unsafe(char_counter char_count_array, ring_buffe
 		ring_ret = ring_add_unsafe(output_ring, (unsigned char)12);
 	}
 
-	if(char_count_array[index] != 0)										// Skip any 0 characters
+	while(char_count_array[index] == 0)			// Skip any 0 characters
 	{
-		ring_ret = ring_add_unsafe(output_ring, (unsigned char)index);		// Print the character
-		ring_ret = ring_add_unsafe(output_ring, ':');
-		ring_ret = ring_add_unsafe(output_ring, char_count_array[index]);	// Print the count of character
-		ring_ret = ring_add_unsafe(output_ring, '\r');						// Newline/CR
-		ring_ret = ring_add_unsafe(output_ring, '\n');
+		index++;
 	}
+
+	ring_ret = ring_add_unsafe(output_ring, (unsigned char)index);		// Print the character
+	ring_ret = ring_add_unsafe(output_ring, ':');
+	ring_ret = ring_add_unsafe(output_ring, char_count_array[index]);	// Print the count of character
+	ring_ret = ring_add_unsafe(output_ring, '\r');						// Newline/CR
+	ring_ret = ring_add_unsafe(output_ring, '\n');
 
 	index++;
 

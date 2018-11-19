@@ -7,6 +7,9 @@
 
 #include "uart_adapter.h"
 
+// STATIC FUNCTIONS
+static bool uart_receive_full(UART_Type* uart_reg);
+
 // UART FUNCTIONS
 uart_error uart_init(uart_config* init)
 {
@@ -29,10 +32,6 @@ uart_error uart_init(uart_config* init)
 			(init->parity_mode == 1 ))
 	{
 		ret = UART_ILLEGAL_PARITY;
-	}
-	else if(init->stop_bit > UART_TWO_STOP_BIT)	//check stop_bit valid
-	{
-		ret = UART_ILLEGAL_STOPBIT;
 	}
 	else if((init->clock_freq != 32000)		||	//check clock frequency valid
 			(init->clock_freq != 4000000)	||
@@ -70,22 +69,61 @@ uart_error uart_init(uart_config* init)
 		// Write baud divisor
 	    init->port->BDH = (init->port->BDH & ~UART_BDH_SBR_MASK) | (uint8_t)(baud_clock_div >> 8);
 	    init->port->BDL = (uint8_t)baud_clock_div;
+
+	    // Set Bit Count and Parity Mode
+	    uint8_t reg = init->port->C1 & ~(UART_C1_PE_MASK | UART_C1_PT_MASK | UART_C1_M_MASK);	//Pulls config register and clears all flags we want to mess with
+		if(init->parity_mode != UART_PARITY_DISABLED)
+		{
+			reg |= UART_C1_M_MASK;							//Sets bits per char to 9 (parity enabled adds 1 bit)
+			reg |= (init->parity_mode << UART_C1_PT_SHIFT);	//Sets parity enabled and parity mode
+		}
+		init->port->C1 = reg;
+
+		// Set Enable RX/TX
+		init->port->C2 |= UART_C2_TE_MASK;
+		init->port->C2 |= UART_C2_RE_MASK;
 	}
 	return ret;
 }
 
-uart_error uart_transmit(UART_Type* uart_reg, char data)
+uart_error uart_transmit(UART_Type* uart_reg, unsigned char data)
 {
 	uart_error ret = UART_SUCCESS;
-	//needs to return some indicator if transmission was successful or not
+
+	if(uart_transmit_full(uart_reg))
+	{
+		ret = UART_FAILURE;
+	}
+	else
+	{
+		uart_reg->D = data;
+	}
 
 	return ret;
 }
 
-uart_error uart_receive(UART_Type* uart_reg, char* data)
+bool uart_transmit_full(UART_Type* uart_reg)
+{
+	return !(uart_reg->S1 & UART_S1_TDRE_MASK);
+}
+
+uart_error uart_receive(UART_Type* uart_reg, unsigned char* data)
 {
 	uart_error ret = UART_SUCCESS;
-	//need to return some indicator if receive was successful or not
+
+	if(!uart_receive_full(uart_reg))
+	{
+		ret = UART_FAILURE;
+	}
+	else
+	{
+		*data = uart_reg->D;
+	}
 
 	return ret;
+}
+
+static bool uart_receive_full(UART_Type* uart_reg)
+{
+	return uart_reg->S1 & UART_S1_RDRF_MASK;
 }

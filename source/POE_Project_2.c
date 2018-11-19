@@ -46,26 +46,42 @@
 #include "uart_adapter.h"
 #include "uart_handler.h"
 
+/* APPLCIATION DEFINES */
+#define IN_RING_SIZE	256
 
-/*
- * @brief   Application entry point.
- */
+/* Declare Buffers */
+char_counter input_array;
+ring_buffer_struct output_ring;
+unsigned char buffer[IN_RING_SIZE];
+
+
 int main(void) {
 
   	/* Init board hardware. */
-    BOARD_InitBootPins();
-    BOARD_InitBootClocks();
-    BOARD_InitBootPeripherals();
+    BOARD_InitBootPins();			//Configures UART pins
+    BOARD_InitBootClocks();			//Configure system clocks
   	/* Init FSL debug console. */
-    BOARD_InitDebugConsole();
+//    BOARD_InitDebugConsole();
 
-    PRINTF("Hello World\n");
+    /* Initialize UART0 */
+    uart_config init_uart0 = UART_INIT_DEFAULT;
+    uart_init(&init_uart0);
 
-    /* Force the counter to be placed into memory. */
-    volatile static int i = 0 ;
-    /* Enter an infinite loop, just incrementing a counter. */
-    while(1) {
-        i++ ;
+    /* Initialize Buffers */
+    ring_init(&output_ring, buffer, IN_RING_SIZE);
+    char_reset(input_array);
+
+    while(1)
+    {
+    	// Generate character count for one character (actually 5 chars->  "e:5\r\n" )
+    	output_single_char(input_array, &output_ring);
+    	// Handle the UART several times
+    	for(uint8_t i = 0; i < 50; i++)
+    	{
+    		uart_handler(init_uart0.port, input_array, &output_ring);
+    	}
     }
+
+
     return 0 ;
 }

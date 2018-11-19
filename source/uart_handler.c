@@ -20,19 +20,16 @@ void uart_handler(UART_Type* uart_reg, char_counter in_buffer, ring_buffer_struc
 	}
 	else
 	{
-		// Transmit a Character
+		unsigned char data = 0;
 
-		// NEED TO CHECK IF TRANSMITTER IS BUSY BEFORE REMOVING/TRANSMITTING
-		unsigned char temp = 0;
-		//maybe add a ring remove "peek"
-		if(ring_remove_unsafe(out_buffer, &temp))
+		// Transmit a Character
+		if(!uart_transmit_full(uart_reg))
 		{
-			uart_transmit(uart_reg, temp);
+			ring_remove_unsafe(out_buffer, &data);
+			uart_transmit(uart_reg, data);
 		}
 
 		// Receive a Character
-		// NEED TO CHECK IF VALID CHARACTER BEFORE RECEIVING/ADDING
-		char data = '\0';
 		if(uart_receive(uart_reg, &data) == UART_SUCCESS)
 		{
 			char_add_unsafe(in_buffer, data);
