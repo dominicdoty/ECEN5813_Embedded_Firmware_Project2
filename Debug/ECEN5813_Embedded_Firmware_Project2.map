@@ -142,6 +142,7 @@ Discarded input sections
  .group         0x00000000        0xc ./source/POE_Project_2.o
  .group         0x00000000        0xc ./source/POE_Project_2.o
  .group         0x00000000        0xc ./source/POE_Project_2.o
+ .group         0x00000000        0xc ./source/POE_Project_2.o
  .text          0x00000000        0x0 ./source/POE_Project_2.o
  .data          0x00000000        0x0 ./source/POE_Project_2.o
  .bss           0x00000000        0x0 ./source/POE_Project_2.o
@@ -292,25 +293,27 @@ Discarded input sections
  .group         0x00000000        0xc ./source/uart_handler.o
  .group         0x00000000        0xc ./source/uart_handler.o
  .group         0x00000000        0xc ./source/uart_handler.o
+ .group         0x00000000        0xc ./source/uart_handler.o
  .text          0x00000000        0x0 ./source/uart_handler.o
  .data          0x00000000        0x0 ./source/uart_handler.o
  .bss           0x00000000        0x0 ./source/uart_handler.o
  .text.uart_handler
-                0x00000000       0x66 ./source/uart_handler.o
- .debug_info    0x00000000      0x1a7 ./source/uart_handler.o
- .debug_abbrev  0x00000000       0xf8 ./source/uart_handler.o
+                0x00000000       0x64 ./source/uart_handler.o
+ .debug_info    0x00000000      0x17b ./source/uart_handler.o
+ .debug_abbrev  0x00000000       0xde ./source/uart_handler.o
  .debug_aranges
                 0x00000000       0x20 ./source/uart_handler.o
  .debug_ranges  0x00000000       0x10 ./source/uart_handler.o
- .debug_macro   0x00000000       0x80 ./source/uart_handler.o
+ .debug_macro   0x00000000       0x7f ./source/uart_handler.o
  .debug_macro   0x00000000      0xa7e ./source/uart_handler.o
  .debug_macro   0x00000000       0x10 ./source/uart_handler.o
  .debug_macro   0x00000000      0x12d ./source/uart_handler.o
  .debug_macro   0x00000000      0x5b2 ./source/uart_handler.o
  .debug_macro   0x00000000       0x16 ./source/uart_handler.o
  .debug_macro   0x00000000       0x22 ./source/uart_handler.o
- .debug_line    0x00000000      0x173 ./source/uart_handler.o
- .debug_str     0x00000000     0x45e7 ./source/uart_handler.o
+ .debug_macro   0x00000000       0x28 ./source/uart_handler.o
+ .debug_line    0x00000000      0x17e ./source/uart_handler.o
+ .debug_str     0x00000000     0x462a ./source/uart_handler.o
  .comment       0x00000000       0x7f ./source/uart_handler.o
  .debug_frame   0x00000000       0x30 ./source/uart_handler.o
  .ARM.attributes
@@ -2194,7 +2197,7 @@ END GROUP
  *(.bss*)
  .bss.s_debugConsole
                 0x1ffff088       0x10 ./utilities/fsl_debug_console.o
- .bss.i.5392    0x1ffff098        0x4 ./source/POE_Project_2.o
+ .bss.i.5396    0x1ffff098        0x4 ./source/POE_Project_2.o
  .bss.g_xtal0Freq
                 0x1ffff09c        0x4 ./drivers/fsl_clock.o
                 0x1ffff09c                g_xtal0Freq
@@ -2246,22 +2249,22 @@ END GROUP
                 0x000033f4                _image_size = (_image_end - _image_start)
 OUTPUT(ECEN5813_Embedded_Firmware_Project2.axf elf32-littlearm)
 
-.debug_info     0x00000000     0x859c
+.debug_info     0x00000000     0x85a3
  .debug_info    0x00000000      0xde1 ./utilities/fsl_debug_console.o
  .debug_info    0x00000de1      0x49b ./startup/startup_mkl25z4.o
- .debug_info    0x0000127c      0x4e2 ./source/POE_Project_2.o
- .debug_info    0x0000175e       0x52 ./source/mtb.o
- .debug_info    0x000017b0       0x3b ./source/semihost_hardfault.o
- .debug_info    0x000017eb     0x1962 ./drivers/fsl_clock.o
- .debug_info    0x0000314d      0x422 ./drivers/fsl_common.o
- .debug_info    0x0000356f      0xeb7 ./drivers/fsl_dma.o
- .debug_info    0x00004426     0x138c ./drivers/fsl_lpsci.o
- .debug_info    0x000057b2     0x1336 ./drivers/fsl_uart.o
- .debug_info    0x00006ae8      0x696 ./board/board.o
- .debug_info    0x0000717e      0xa7b ./board/clock_config.o
- .debug_info    0x00007bf9       0x3b ./board/peripherals.o
- .debug_info    0x00007c34      0x56a ./board/pin_mux.o
- .debug_info    0x0000819e      0x3fe ./CMSIS/system_MKL25Z4.o
+ .debug_info    0x0000127c      0x4e9 ./source/POE_Project_2.o
+ .debug_info    0x00001765       0x52 ./source/mtb.o
+ .debug_info    0x000017b7       0x3b ./source/semihost_hardfault.o
+ .debug_info    0x000017f2     0x1962 ./drivers/fsl_clock.o
+ .debug_info    0x00003154      0x422 ./drivers/fsl_common.o
+ .debug_info    0x00003576      0xeb7 ./drivers/fsl_dma.o
+ .debug_info    0x0000442d     0x138c ./drivers/fsl_lpsci.o
+ .debug_info    0x000057b9     0x1336 ./drivers/fsl_uart.o
+ .debug_info    0x00006aef      0x696 ./board/board.o
+ .debug_info    0x00007185      0xa7b ./board/clock_config.o
+ .debug_info    0x00007c00       0x3b ./board/peripherals.o
+ .debug_info    0x00007c3b      0x56a ./board/pin_mux.o
+ .debug_info    0x000081a5      0x3fe ./CMSIS/system_MKL25Z4.o
 
 .debug_abbrev   0x00000000     0x19d8
  .debug_abbrev  0x00000000      0x294 ./utilities/fsl_debug_console.o
@@ -2328,7 +2331,7 @@ OUTPUT(ECEN5813_Embedded_Firmware_Project2.axf elf32-littlearm)
  .debug_ranges  0x00000738       0x28 ./board/pin_mux.o
  .debug_ranges  0x00000760       0x18 ./CMSIS/system_MKL25Z4.o
 
-.debug_macro    0x00000000     0x8d0c
+.debug_macro    0x00000000     0x8d33
  .debug_macro   0x00000000      0x127 ./utilities/fsl_debug_console.o
  .debug_macro   0x00000127      0xa7e ./utilities/fsl_debug_console.o
  .debug_macro   0x00000ba5       0x10 ./utilities/fsl_debug_console.o
@@ -2355,29 +2358,30 @@ OUTPUT(ECEN5813_Embedded_Firmware_Project2.axf elf32-littlearm)
  .debug_macro   0x00007eab       0x10 ./utilities/fsl_debug_console.o
  .debug_macro   0x00007ebb       0x10 ./utilities/fsl_debug_console.o
  .debug_macro   0x00007ecb       0x29 ./startup/startup_mkl25z4.o
- .debug_macro   0x00007ef4      0x18c ./source/POE_Project_2.o
- .debug_macro   0x00008080       0xd8 ./source/POE_Project_2.o
- .debug_macro   0x00008158       0x16 ./source/POE_Project_2.o
- .debug_macro   0x0000816e       0x10 ./source/POE_Project_2.o
- .debug_macro   0x0000817e      0x112 ./source/POE_Project_2.o
- .debug_macro   0x00008290       0x34 ./source/POE_Project_2.o
- .debug_macro   0x000082c4       0x10 ./source/POE_Project_2.o
- .debug_macro   0x000082d4       0x2f ./source/mtb.o
- .debug_macro   0x00008303       0x82 ./source/mtb.o
- .debug_macro   0x00008385       0x10 ./source/mtb.o
- .debug_macro   0x00008395       0x11 ./source/semihost_hardfault.o
- .debug_macro   0x000083a6      0x196 ./drivers/fsl_clock.o
- .debug_macro   0x0000853c       0x1c ./drivers/fsl_clock.o
- .debug_macro   0x00008558       0xef ./drivers/fsl_common.o
- .debug_macro   0x00008647       0xec ./drivers/fsl_dma.o
- .debug_macro   0x00008733       0xec ./drivers/fsl_lpsci.o
- .debug_macro   0x0000881f       0xf2 ./drivers/fsl_uart.o
- .debug_macro   0x00008911      0x112 ./board/board.o
- .debug_macro   0x00008a23      0x123 ./board/clock_config.o
- .debug_macro   0x00008b46       0x1b ./board/peripherals.o
- .debug_macro   0x00008b61      0x107 ./board/pin_mux.o
- .debug_macro   0x00008c68       0x10 ./board/pin_mux.o
- .debug_macro   0x00008c78       0x94 ./CMSIS/system_MKL25Z4.o
+ .debug_macro   0x00007ef4      0x18b ./source/POE_Project_2.o
+ .debug_macro   0x0000807f       0xd8 ./source/POE_Project_2.o
+ .debug_macro   0x00008157       0x16 ./source/POE_Project_2.o
+ .debug_macro   0x0000816d       0x10 ./source/POE_Project_2.o
+ .debug_macro   0x0000817d      0x112 ./source/POE_Project_2.o
+ .debug_macro   0x0000828f       0x34 ./source/POE_Project_2.o
+ .debug_macro   0x000082c3       0x10 ./source/POE_Project_2.o
+ .debug_macro   0x000082d3       0x28 ./source/POE_Project_2.o
+ .debug_macro   0x000082fb       0x2f ./source/mtb.o
+ .debug_macro   0x0000832a       0x82 ./source/mtb.o
+ .debug_macro   0x000083ac       0x10 ./source/mtb.o
+ .debug_macro   0x000083bc       0x11 ./source/semihost_hardfault.o
+ .debug_macro   0x000083cd      0x196 ./drivers/fsl_clock.o
+ .debug_macro   0x00008563       0x1c ./drivers/fsl_clock.o
+ .debug_macro   0x0000857f       0xef ./drivers/fsl_common.o
+ .debug_macro   0x0000866e       0xec ./drivers/fsl_dma.o
+ .debug_macro   0x0000875a       0xec ./drivers/fsl_lpsci.o
+ .debug_macro   0x00008846       0xf2 ./drivers/fsl_uart.o
+ .debug_macro   0x00008938      0x112 ./board/board.o
+ .debug_macro   0x00008a4a      0x123 ./board/clock_config.o
+ .debug_macro   0x00008b6d       0x1b ./board/peripherals.o
+ .debug_macro   0x00008b88      0x107 ./board/pin_mux.o
+ .debug_macro   0x00008c8f       0x10 ./board/pin_mux.o
+ .debug_macro   0x00008c9f       0x94 ./CMSIS/system_MKL25Z4.o
 
 .debug_line     0x00000000     0x3416
  .debug_line    0x00000000      0x69d ./utilities/fsl_debug_console.o
@@ -2396,36 +2400,36 @@ OUTPUT(ECEN5813_Embedded_Firmware_Project2.axf elf32-littlearm)
  .debug_line    0x00002fe6      0x248 ./board/pin_mux.o
  .debug_line    0x0000322e      0x1e8 ./CMSIS/system_MKL25Z4.o
 
-.debug_str      0x00000000    0x3667b
+.debug_str      0x00000000    0x366e6
  .debug_str     0x00000000    0x313fd ./utilities/fsl_debug_console.o
                               0x316d0 (size before relaxing)
  .debug_str     0x000313fd      0x3e1 ./startup/startup_mkl25z4.o
                                0x313c (size before relaxing)
- .debug_str     0x000317de     0x11a0 ./source/POE_Project_2.o
-                              0x316f8 (size before relaxing)
- .debug_str     0x0003297e      0x532 ./source/mtb.o
+ .debug_str     0x000317de     0x120b ./source/POE_Project_2.o
+                              0x31769 (size before relaxing)
+ .debug_str     0x000329e9      0x532 ./source/mtb.o
                                0x3248 (size before relaxing)
- .debug_str     0x00032eb0       0x1f ./source/semihost_hardfault.o
+ .debug_str     0x00032f1b       0x1f ./source/semihost_hardfault.o
                                0x2d35 (size before relaxing)
- .debug_str     0x00032ecf     0x15b1 ./drivers/fsl_clock.o
+ .debug_str     0x00032f3a     0x15b1 ./drivers/fsl_clock.o
                               0x32243 (size before relaxing)
- .debug_str     0x00034480      0x2d6 ./drivers/fsl_common.o
+ .debug_str     0x000344eb      0x2d6 ./drivers/fsl_common.o
                               0x3082a (size before relaxing)
- .debug_str     0x00034756      0x7e5 ./drivers/fsl_dma.o
+ .debug_str     0x000347c1      0x7e5 ./drivers/fsl_dma.o
                               0x31511 (size before relaxing)
- .debug_str     0x00034f3b      0x946 ./drivers/fsl_lpsci.o
+ .debug_str     0x00034fa6      0x946 ./drivers/fsl_lpsci.o
                               0x3184b (size before relaxing)
- .debug_str     0x00035881      0x832 ./drivers/fsl_uart.o
+ .debug_str     0x000358ec      0x832 ./drivers/fsl_uart.o
                               0x3186e (size before relaxing)
- .debug_str     0x000360b3       0x4c ./board/board.o
+ .debug_str     0x0003611e       0x4c ./board/board.o
                               0x31388 (size before relaxing)
- .debug_str     0x000360ff      0x300 ./board/clock_config.o
+ .debug_str     0x0003616a      0x300 ./board/clock_config.o
                               0x31171 (size before relaxing)
- .debug_str     0x000363ff       0x31 ./board/peripherals.o
+ .debug_str     0x0003646a       0x31 ./board/peripherals.o
                                0x2d46 (size before relaxing)
- .debug_str     0x00036430      0x1fc ./board/pin_mux.o
+ .debug_str     0x0003649b      0x1fc ./board/pin_mux.o
                               0x308d4 (size before relaxing)
- .debug_str     0x0003662c       0x4f ./CMSIS/system_MKL25Z4.o
+ .debug_str     0x00036697       0x4f ./CMSIS/system_MKL25Z4.o
                               0x2fbad (size before relaxing)
 
 .comment        0x00000000       0x7e

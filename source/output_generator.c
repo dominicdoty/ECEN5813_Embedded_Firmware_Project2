@@ -29,20 +29,11 @@ output_error output_complete(char_counter char_count_array, ring_buffer_struct* 
 		{
 			if(char_count_array[index] != 0)										// Skip any 0 characters
 			{
-				printf("\nPrinting %c quant %d", (unsigned char)index, char_count_array[index]);
 				ring_ret = ring_add_unsafe(output_ring, (unsigned char)index);		// Print the character
-				// printf("Printing 1: %d\n", ring_ret);
 				ring_ret = ring_add_unsafe(output_ring, ':');
-				// printf("Printing 2: %d\n", ring_ret);
 				ring_ret = ring_add_unsafe(output_ring, char_count_array[index]);	// Print the count of character
-				// printf("Printing 3: %d\n", ring_ret);
 				ring_ret = ring_add_unsafe(output_ring, '\r');						// Newline/CR
-				// printf("Printing 4: %d\n", ring_ret);
 				ring_ret = ring_add_unsafe(output_ring, '\n');
-				// printf("Printing 5: %d\n", ring_ret);
-				uint16_t count = 0;
-				ring_element_count(output_ring, &count);
-				printf("\nRing Elements: %d", count);
 			}
 		}
 	}

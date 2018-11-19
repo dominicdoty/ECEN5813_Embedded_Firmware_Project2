@@ -101,7 +101,7 @@ int main()
 		return CU_get_error();
 
 	/* add a suite to the registry */
-	pSuite = CU_add_suite("Char Counter Tests", NULL, NULL);
+	pSuite = CU_add_suite("Output Generator Test", NULL, NULL);
 	if (NULL == pSuite)
 	{
 		CU_cleanup_registry();
@@ -110,7 +110,7 @@ int main()
 
 	/* add the tests to the suite */
 	if ((NULL == CU_add_test(pSuite, "test of single char output", test_output_single_char)) ||
-	(NULL == CU_add_test(pSuite, "test of full char output", test_output_complete)))
+	(NULL == CU_add_test(pSuite, "test of full output", test_output_complete)))
 	{
 		CU_cleanup_registry();
 		return CU_get_error();

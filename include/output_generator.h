@@ -10,7 +10,6 @@
 
 #include "ring_buffer.h"
 #include "char_counter.h"
-#include "stdio.h"			// Debugging
 
 typedef enum {OUTPUT_SUCCESS, OUTPUT_NULL_PTR, OUTPUT_FULL, OUTPUT_UNKNOWN_ERROR}output_error;
 
