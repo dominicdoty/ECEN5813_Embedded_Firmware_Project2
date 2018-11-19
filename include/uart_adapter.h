@@ -32,7 +32,7 @@ typedef struct
 typedef enum {UART_SUCCESS, UART_FAILURE}uart_error;
 
 // UART FUNCTIONS
-void uart_init(uart_error* ret, uart_config* init);
+uart_error uart_init(uart_config* init);
 
 void uart_transmit(int8_t* uart_reg, char data);
 
