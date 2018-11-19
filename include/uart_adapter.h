@@ -20,11 +20,12 @@
 #define UART_PARITY_ODD			0x3U
 #define UART_ONE_STOP_BIT		0x0U
 #define UART_TWO_STOP_BIT		0x1U
+#define XTAL0_F					8000000
 
 // UART VARIABLES
 typedef struct
 {
-	uint32_t* port_ptr;
+	UART_Type* port;
 	uint32_t clock_freq;
 	clock_ip_name_t clock_name;
 	uint32_t baudrate;
@@ -35,13 +36,13 @@ typedef struct
 }uart_config;
 
 // NEED REAL ERRORS
-typedef enum {UART_SUCCESS, UART_NULL_PTR, UART_NULL_PORT, UART_ILLEGAL_PARITY, UART_ILLEGAL_STOPBIT, UART_ILLEGAL_FREQUENCY, UART_BAUDRATE_TOO_HIGH_FOR_CLOCK}uart_error;
+typedef enum {UART_SUCCESS, UART_NULL_PTR, UART_ILLEGAL_PORT, UART_ILLEGAL_PARITY, UART_ILLEGAL_STOPBIT, UART_ILLEGAL_FREQUENCY, UART_BAUDRATE_TOO_HIGH_FOR_CLOCK}uart_error;
 
 // UART FUNCTIONS
 uart_error uart_init(uart_config* init);
 
-uart_error uart_transmit(int8_t* uart_reg, char data);
+uart_error uart_transmit(UART_Type* uart_reg, char data);
 
-uart_error uart_receive(int8_t* uart_reg, char* data);
+uart_error uart_receive(UART_Type* uart_reg, char* data);
 
 #endif /* UART_ADAPTER_H_ */

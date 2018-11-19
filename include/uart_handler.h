@@ -15,6 +15,6 @@
 #include "char_counter.h"
 
 // Takes pointers to the UART tx/rx buffer, pointer to input buffer (char classification buffer), pointer to output buffer (ring buffer of output chars)
-void uart_handler(int8_t* uart_reg, char_counter in_buffer, ring_buffer_struct* out_buffer);
+void uart_handler(UART_Type* uart_reg, char_counter in_buffer, ring_buffer_struct* out_buffer);
 
 #endif /* INCLUDE_UART_HANDLER_H_ */

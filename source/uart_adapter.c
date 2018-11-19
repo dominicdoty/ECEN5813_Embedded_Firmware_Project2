@@ -10,19 +10,20 @@
 // UART FUNCTIONS
 uart_error uart_init(uart_config* init)
 {
+	// NOTE THAT THIS IS HEAVILY INFLUENCED BY NXP UART DRIVER
+	// IT HAS BEEN REWRITTEN, BUT IT WILL BEAR A MARKED SIMILARITY
+	// CREDIT TO NXP, ORIGINAL @ fsl_uart.c
 	uart_error ret = UART_SUCCESS;
 
 	if(init == NULL)							//check for non-void init
 	{
 		ret = UART_NULL_PTR;
 	}
-	else if(init->port_ptr == NULL)				//check for non-void port pointer
+	else if((init->port != (UART_Type*)UART0) ||			//check for valid port
+			(init->port != (UART_Type*)UART1) ||
+			(init->port != (UART_Type*)UART2) )
 	{
-		ret = UART_NULL_PORT;
-	}
-	else if(init->port_ptr != (uint32_t*)UART0_BASE)
-	{
-
+		ret = UART_ILLEGAL_PORT;
 	}
 	else if((init->parity_mode > 3 ) ||			//check parity_mode valid
 			(init->parity_mode == 1 ))
@@ -35,10 +36,8 @@ uart_error uart_init(uart_config* init)
 	}
 	else if((init->clock_freq != 32000)		||	//check clock frequency valid
 			(init->clock_freq != 4000000)	||
-			(init->clock_freq != EXTAL0)	||
-			(init->clock_freq != XTAL0)		||
-			(init->clock_freq != EXTAL0/2)	||
-			(init->clock_freq != XTAL0/2))
+			(init->clock_freq != XTAL0_F)	||
+			(init->clock_freq != XTAL0_F/2))
 	{
 		ret = UART_ILLEGAL_FREQUENCY;
 	}
@@ -48,29 +47,34 @@ uart_error uart_init(uart_config* init)
 	}
 	else
 	{
-		// Calculate the clock divisor to achieve the baud rate requested
-		uint16_t baud_clock_div = init->clock_freq / (init->baudrate * 16);	//NOTE THIS IS THE SAME AS THE NXP UART DRIVER
-
 		// Enable the UART Clock
-		if(init->port_ptr == (uint32_t*)UART0_BASE)
+		if(init->port == (UART_Type*)UART0)
 		{
 			CLOCK_EnableClock(kCLOCK_Uart0);
 		}
-		else if(init->port_ptr == (uint32_t*)UART1_BASE)
+		else if(init->port == (UART_Type*)UART1)
 		{
 			CLOCK_EnableClock(kCLOCK_Uart1);
 		}
-		else if(init->port_ptr == (uint32_t*)UART2_BASE)
+		else if(init->port == (UART_Type*)UART2)
 		{
 			CLOCK_EnableClock(kCLOCK_Uart2);
 		}
 
-		// do some init tasks
+		// Disable TX/RX
+		init->port->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);
+
+		// Calculate the clock divisor to achieve the baud rate requested
+		uint16_t baud_clock_div = init->clock_freq / (init->baudrate * 16);	//NOTE THIS IS THE SAME AS THE NXP UART DRIVER
+
+		// Write baud divisor
+	    init->port->BDH = (init->port->BDH & ~UART_BDH_SBR_MASK) | (uint8_t)(baud_clock_div >> 8);
+	    init->port->BDL = (uint8_t)baud_clock_div;
 	}
 	return ret;
 }
 
-uart_error uart_transmit(int8_t* uart_reg, char data)
+uart_error uart_transmit(UART_Type* uart_reg, char data)
 {
 	uart_error ret = UART_SUCCESS;
 	//needs to return some indicator if transmission was successful or not
@@ -78,7 +82,7 @@ uart_error uart_transmit(int8_t* uart_reg, char data)
 	return ret;
 }
 
-uart_error uart_receive(int8_t* uart_reg, char* data)
+uart_error uart_receive(UART_Type* uart_reg, char* data)
 {
 	uart_error ret = UART_SUCCESS;
 	//need to return some indicator if receive was successful or not

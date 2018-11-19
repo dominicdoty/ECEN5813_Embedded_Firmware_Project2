@@ -7,7 +7,7 @@
 
 #include "uart_handler.h"
 
-void uart_handler(int8_t* uart_reg, char_counter in_buffer, ring_buffer_struct* out_buffer)
+void uart_handler(UART_Type* uart_reg, char_counter in_buffer, ring_buffer_struct* out_buffer)
 {
 	//check for NULL pointers
 	if(uart_reg == NULL)
@@ -24,6 +24,7 @@ void uart_handler(int8_t* uart_reg, char_counter in_buffer, ring_buffer_struct* 
 
 		// NEED TO CHECK IF TRANSMITTER IS BUSY BEFORE REMOVING/TRANSMITTING
 		unsigned char temp = 0;
+		//maybe add a ring remove "peek"
 		if(ring_remove_unsafe(out_buffer, &temp))
 		{
 			uart_transmit(uart_reg, temp);
@@ -31,6 +32,10 @@ void uart_handler(int8_t* uart_reg, char_counter in_buffer, ring_buffer_struct* 
 
 		// Receive a Character
 		// NEED TO CHECK IF VALID CHARACTER BEFORE RECEIVING/ADDING
-		char_add_unsafe(in_buffer, uart_receive(uart_reg));
+		char data = '\0';
+		if(uart_receive(uart_reg, &data) == UART_SUCCESS)
+		{
+			char_add_unsafe(in_buffer, data);
+		}
 	}
 }
