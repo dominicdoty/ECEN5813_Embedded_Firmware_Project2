@@ -9,6 +9,7 @@
 
 void uart_handler(UART_Type* uart_reg, char_counter in_buffer, ring_buffer_struct* out_buffer)
 {
+	NVIC_DisableIRQ(UART0_IRQn);
 	//check for NULL pointers
 	if(uart_reg == NULL)
 	{
@@ -25,8 +26,11 @@ void uart_handler(UART_Type* uart_reg, char_counter in_buffer, ring_buffer_struc
 		// Transmit a Character
 		if(!uart_transmit_full(uart_reg))
 		{
-			ring_remove_unsafe(out_buffer, &data);
-			uart_transmit(uart_reg, data);
+			ring_error ring_ret = ring_remove_unsafe(out_buffer, &data);
+			if(ring_ret == RING_SUCCESS)
+			{
+				uart_transmit(uart_reg, data);
+			}
 		}
 
 		// Receive a Character
@@ -34,6 +38,9 @@ void uart_handler(UART_Type* uart_reg, char_counter in_buffer, ring_buffer_struc
 		{
 			uart_receive(uart_reg, &data);
 			char_add_unsafe(in_buffer, data);
+			schedule_flags = 1;
 		}
 	}
+
+	NVIC_EnableIRQ(UART0_IRQn);
 }

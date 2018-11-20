@@ -78,6 +78,14 @@ uart_error uart_init(uart_config* init)
 		// Set Enable RX/TX
 		init->port->C2 |= UART_C2_TE_MASK;
 		init->port->C2 |= UART_C2_RE_MASK;
+
+		// Configure Interrupts (Lifted from NXP fsl_uart.c - not original)
+		//kUART_TxDataRegEmptyInterruptEnable for txing
+		uint32_t mask = (kUART_RxDataRegFullInterruptEnable) & kUART_AllInterruptsEnable;
+	    init->port->BDH |= mask;
+	    init->port->C2 |= (mask >> 8);
+	    init->port->C3 |= (mask >> 16);
+		NVIC_EnableIRQ(UART0_IRQn);
 	}
 	return ret;
 }

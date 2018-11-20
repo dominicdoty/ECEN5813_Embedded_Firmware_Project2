@@ -47,7 +47,7 @@
 #include "uart_handler.h"
 
 /* APPLCIATION DEFINES */
-#define OUT_RING_SIZE	16
+#define OUT_RING_SIZE	256
 #define FATAL_ERROR_DEBUG
 
 #ifdef FATAL_ERROR_DEBUG
@@ -61,19 +61,14 @@ char_counter input_array;
 ring_buffer_struct output_ring;
 unsigned char buffer[OUT_RING_SIZE];
 
+/* Declare Flags */
+volatile uint8_t schedule_flags = 0;
 
 int main(void) {
 
   	/* Init board hardware. */
     BOARD_InitBootPins();			//Configures UART pins
     BOARD_InitBootClocks();			//Configure system clocks
-
-    /* Initialize UART0 */
-    uart_config init_uart0 = UART_INIT_DEFAULT;
-    if(uart_init(&init_uart0) != UART_SUCCESS)
-    {
-    	FATAL_ERROR;
-    }
 
     /* Initialize Buffers */
     if(ring_init(&output_ring, buffer, OUT_RING_SIZE) !=  RING_SUCCESS)
@@ -85,13 +80,47 @@ int main(void) {
     	FATAL_ERROR;
     }
 
-	unsigned char data = 0;
+    /* Initialize UART0 */
+    uart_config init_uart0 = UART_INIT_DEFAULT;
+    if(uart_init(&init_uart0) != UART_SUCCESS)
+    {
+    	FATAL_ERROR;
+    }
+
+//    output_error output_ret = OUTPUT_SUCCESS;
 
     while(1)
     {
-    	uart_receive_blocking(init_uart0.port, &data);
-    	uart_transmit_blocking(init_uart0.port, data);
+    	GPIO_TogglePinsOutput(GPIOB, (1 << 8));
+//    	if(schedule_flags == 1)
+//    	{
+//    		output_ret = output_complete(input_array, &output_ring);
+//    		if(output_ret != OUTPUT_SUCCESS)
+//			{
+//				FATAL_ERROR;
+//			}
+//    		NVIC_DisableIRQ(UART0_IRQn);
+//    		schedule_flags = 0;
+//    		NVIC_DisableIRQ(UART0_IRQn);
+//    	}
     }
 
     return 0;
+}
+
+void UART0_IRQHandler(void)
+{
+	unsigned char data = 0;
+
+	// Receive a Character
+	if(uart_receive_full((UART_Type*)UART0))
+	{
+		uart_receive((UART_Type*)UART0, &data);
+	}
+
+	// Transmit a Character
+	if(!uart_transmit_full((UART_Type*)UART0))
+	{
+		uart_transmit((UART_Type*)UART0, data);
+	}
 }

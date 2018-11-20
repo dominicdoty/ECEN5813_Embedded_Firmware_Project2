@@ -14,6 +14,9 @@
 #include "uart_adapter.h"
 #include "char_counter.h"
 
+/* Global Vars */
+extern volatile uint8_t schedule_flags;
+
 // Takes pointers to the UART tx/rx buffer, pointer to input buffer (char classification buffer), pointer to output buffer (ring buffer of output chars)
 void uart_handler(UART_Type* uart_reg, char_counter in_buffer, ring_buffer_struct* out_buffer);
 

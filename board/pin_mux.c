@@ -85,6 +85,10 @@ void BOARD_InitPins(void) {
       | SIM_SOPT5_UART0TXSRC(SOPT5_UART0TXSRC_UART_TX)       /* UART0 transmit data source select: UART0_TX pin */
       | SIM_SOPT5_UART0RXSRC(SOPT5_UART0RXSRC_UART_RX)       /* UART0 receive data source select: UART0_RX pin */
     );
+
+  /* Set Up GPIO Pin for Toggling */
+  gpio_pin_config_t fig = {kGPIO_DigitalOutput, 0};
+  GPIO_PinInit(GPIOB, 8, &fig);
 }
 
 /*******************************************************************************

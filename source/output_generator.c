@@ -28,7 +28,7 @@ output_error output_complete(char_counter char_count_array, ring_buffer_struct* 
 	}
 	else
 	{
-		ring_ret = ring_add_unsafe(output_ring, (char)12);							// Print form feed
+		ring_ret = ring_add_unsafe(output_ring, '\f');								// Print form feed
 
 		for(uint16_t index = 0; index < 256; index++)
 		{

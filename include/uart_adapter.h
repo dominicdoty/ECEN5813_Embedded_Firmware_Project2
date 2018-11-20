@@ -13,6 +13,7 @@
 #include "stdbool.h"
 #include "stdint.h"
 #include "fsl_clock.h"
+#include "fsl_uart.h"
 
 // UART DEFINES
 #define UART_PARITY_DISABLED	0x0U
