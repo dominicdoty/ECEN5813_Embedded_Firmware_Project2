@@ -7,7 +7,7 @@ BUILDDIR = build
 INCLUDE = -I../include -Icunit_headers
 CFLAGS = $(INCLUDE) $(LIBRARIES) -Wall
 
-null:all
+unittest:all
 
 #=======================================================================
 

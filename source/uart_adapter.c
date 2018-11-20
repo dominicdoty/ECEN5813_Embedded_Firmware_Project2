@@ -94,6 +94,12 @@ bool uart_transmit_full(UART_Type* uart_reg)
 	return !(uart_reg->S1 & UART_S1_TDRE_MASK);
 }
 
+uart_error uart_transmit_blocking(UART_Type* uart_reg, unsigned char data)
+{
+	while(uart_transmit_full(uart_reg));
+	return uart_transmit(uart_reg, data);
+}
+
 uart_error uart_receive(UART_Type* uart_reg, unsigned char* data)
 {
 	uart_error ret = UART_SUCCESS;
@@ -104,4 +110,10 @@ uart_error uart_receive(UART_Type* uart_reg, unsigned char* data)
 bool uart_receive_full(UART_Type* uart_reg)
 {
 	return uart_reg->S1 & UART_S1_RDRF_MASK;
+}
+
+uart_error uart_receive_blocking(UART_Type* uart_reg, unsigned char* data)
+{
+	while(!uart_receive_full(uart_reg));
+	return uart_receive(uart_reg, data);
 }

@@ -48,8 +48,12 @@ uart_error uart_transmit(UART_Type* uart_reg, unsigned char data);
 
 bool uart_transmit_full(UART_Type* uart_reg);
 
+uart_error uart_transmit_blocking(UART_Type* uart_reg, unsigned char data);
+
 uart_error uart_receive(UART_Type* uart_reg, unsigned char* data);
 
 bool uart_receive_full(UART_Type* uart_reg);
+
+uart_error uart_receive_blocking(UART_Type* uart_reg, unsigned char* data);
 
 #endif /* UART_ADAPTER_H_ */
