@@ -10,7 +10,7 @@
 
 // STATIC FUNCTIONS
 static void stringify(uint16_t input, unsigned char* output_array);
-
+static ring_error stringify_output(uint16_t input, ring_buffer_struct* output_ring);
 
 // GLOBAL FUNCTIONS
 output_error output_complete(char_counter char_count_array, ring_buffer_struct* output_ring)
@@ -36,14 +36,17 @@ output_error output_complete(char_counter char_count_array, ring_buffer_struct* 
 			{
 				ring_ret = ring_add_unsafe(output_ring, (unsigned char)index);		// Print the character
 				ring_ret = ring_add_unsafe(output_ring, ':');
-				ring_ret = ring_add_unsafe(output_ring, char_count_array[index]);	// Print the count of character
+				ring_ret = stringify_output(char_count_array[index], output_ring);
 				ring_ret = ring_add_unsafe(output_ring, '\r');						// Newline/CR
 				ring_ret = ring_add_unsafe(output_ring, '\n');
 			}
 		}
 	}
 
-	if(ring_ret == RING_FULL){ret = OUTPUT_FULL;}
+	if(ring_ret == RING_FULL)
+	{
+		ret = OUTPUT_FULL;
+	}
 
 	return ret;
 }
@@ -94,17 +97,7 @@ output_error output_single_char_unsafe(char_counter char_count_array, ring_buffe
 	{
 		ring_ret = ring_add_unsafe(output_ring, (unsigned char)index);		// Print the character
 		ring_ret = ring_add_unsafe(output_ring, ':');						// Print semicolon divider
-
-		unsigned char num_string_buffer[6];
-		uint8_t num_string_index = 0;
-
-		stringify(char_count_array[index], num_string_buffer);
-		while(num_string_buffer[num_string_index] != '\0')
-		{
-			ring_ret = ring_add_unsafe(output_ring, num_string_buffer[num_string_index]);	// Print the count of character
-			num_string_index++;
-		}
-
+		ring_ret = stringify_output(char_count_array[index], output_ring);
 		ring_ret = ring_add_unsafe(output_ring, '\r');						// Newline/CR
 		ring_ret = ring_add_unsafe(output_ring, '\n');
 	}
@@ -136,4 +129,20 @@ static void stringify(uint16_t input, unsigned char* output_array)
 		index++;												// Move over to the next spot in output array
 	}
 	output_array[index] = '\0';								// End of string null
+}
+
+static ring_error stringify_output(uint16_t input, ring_buffer_struct* output_ring)
+{
+	unsigned char num_string_buffer[6];
+	uint8_t num_string_index = 0;
+	ring_error ring_ret = RING_SUCCESS;
+
+	stringify(input, num_string_buffer);
+	while(num_string_buffer[num_string_index] != '\0')
+	{
+		ring_ret = ring_add_unsafe(output_ring, num_string_buffer[num_string_index]);	// Print the count of character
+		num_string_index++;
+	}
+
+	return ring_ret;
 }

@@ -23,7 +23,16 @@ void uart_handler(UART_Type* uart_reg, char_counter in_buffer, ring_buffer_struc
 	{
 		unsigned char data = 0;
 
+		// Receive a Character
+		if(uart_receive_full(uart_reg))
+		{
+			uart_receive(uart_reg, &data);
+			char_add_unsafe(in_buffer, data);
+			schedule_flags = 1;					// Flag tells main we need to generate new output
+		}
+
 		// Transmit a Character
+		//&& (UART0->C2 & UART_C2_TIE_MASK)
 		if(!uart_transmit_full(uart_reg))
 		{
 			ring_error ring_ret = ring_remove_unsafe(out_buffer, &data);
@@ -31,14 +40,11 @@ void uart_handler(UART_Type* uart_reg, char_counter in_buffer, ring_buffer_struc
 			{
 				uart_transmit(uart_reg, data);
 			}
-		}
-
-		// Receive a Character
-		if(uart_receive_full(uart_reg))
-		{
-			uart_receive(uart_reg, &data);
-			char_add_unsafe(in_buffer, data);
-			schedule_flags = 1;
+			else if(ring_ret == RING_EMPTY)
+			{
+				// No more transmits needed, disable interrupt
+				UART0->C2 &= ~UART_C2_TIE_MASK;
+			}
 		}
 	}
 

@@ -47,7 +47,7 @@
 #include "uart_handler.h"
 
 /* APPLCIATION DEFINES */
-#define OUT_RING_SIZE	256
+#define OUT_RING_SIZE	2048
 #define FATAL_ERROR_DEBUG
 
 #ifdef FATAL_ERROR_DEBUG
@@ -87,22 +87,29 @@ int main(void) {
     	FATAL_ERROR;
     }
 
-//    output_error output_ret = OUTPUT_SUCCESS;
+    output_error output_ret = OUTPUT_SUCCESS;
 
     while(1)
     {
     	GPIO_TogglePinsOutput(GPIOB, (1 << 8));
-//    	if(schedule_flags == 1)
-//    	{
-//    		output_ret = output_complete(input_array, &output_ring);
-//    		if(output_ret != OUTPUT_SUCCESS)
-//			{
-//				FATAL_ERROR;
-//			}
-//    		NVIC_DisableIRQ(UART0_IRQn);
-//    		schedule_flags = 0;
-//    		NVIC_DisableIRQ(UART0_IRQn);
-//    	}
+    	if(schedule_flags == 1)
+    	{
+    		// If the interrupt has received a character and flags main to generate new output
+    		NVIC_DisableIRQ(UART0_IRQn);
+			schedule_flags = 0;				// Output generation happening, clear flag (eliminates race)
+			NVIC_EnableIRQ(UART0_IRQn);
+
+    		output_ret = output_complete(input_array, &output_ring);
+
+    		UART0->C2 |= UART_C2_TIE_MASK;	// Output ready for transmit, enable TX int
+    	}
+    	if((output_ret == OUTPUT_FULL) && !(UART0->C2 & UART_C2_TIE_MASK))
+    	{
+    		// If the last output generation resulted in a full buffer, and we're done transmitting,
+    		// generate a clean output set with the now empty buffer
+    		output_ret = output_complete(input_array, &output_ring);
+    		UART0->C2 |= UART_C2_TIE_MASK;	// Output ready for transmit, enable TX int
+    	}
     }
 
     return 0;
@@ -110,17 +117,5 @@ int main(void) {
 
 void UART0_IRQHandler(void)
 {
-	unsigned char data = 0;
-
-	// Receive a Character
-	if(uart_receive_full((UART_Type*)UART0))
-	{
-		uart_receive((UART_Type*)UART0, &data);
-	}
-
-	// Transmit a Character
-	if(!uart_transmit_full((UART_Type*)UART0))
-	{
-		uart_transmit((UART_Type*)UART0, data);
-	}
+	uart_handler((UART_Type*)UART0, input_array, &output_ring);
 }

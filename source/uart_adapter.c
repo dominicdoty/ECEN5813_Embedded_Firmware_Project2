@@ -80,7 +80,6 @@ uart_error uart_init(uart_config* init)
 		init->port->C2 |= UART_C2_RE_MASK;
 
 		// Configure Interrupts (Lifted from NXP fsl_uart.c - not original)
-		//kUART_TxDataRegEmptyInterruptEnable for txing
 		uint32_t mask = (kUART_RxDataRegFullInterruptEnable) & kUART_AllInterruptsEnable;
 	    init->port->BDH |= mask;
 	    init->port->C2 |= (mask >> 8);

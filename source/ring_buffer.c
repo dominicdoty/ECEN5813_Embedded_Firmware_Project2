@@ -157,5 +157,10 @@ ring_error ring_element_count_unsafe(ring_buffer_struct* rbs, uint16_t* count)
 					rbs->head - rbs->tail;
 	*count = (uint16_t)temp;
 
+	if(rbs->head == (rbs->tail - 1))
+	{
+		ret = RING_FULL;
+	}
+
 	return ret;
 }
