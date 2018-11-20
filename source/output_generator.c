@@ -67,24 +67,32 @@ output_error output_single_char_unsafe(char_counter char_count_array, ring_buffe
 	output_error ret = OUTPUT_SUCCESS;
 	ring_error ring_ret = RING_SUCCESS;
 	static uint8_t index = 0;
+	static uint8_t last_index = 0;
 
-	if(index == 0)
-	{
-		ring_ret = ring_add_unsafe(output_ring, (unsigned char)12);
-	}
+	last_index = index;
+	index++;
 
-	while(char_count_array[index] == 0)			// Skip any 0 characters
+	while((char_count_array[index] == 0) && (index != last_index))		// Skip any 0 characters
 	{
+		// Increment index as long as it points at a char with 0 count
+		// If we increment all the way back to the start, break out of the loop
 		index++;
 	}
 
-	ring_ret = ring_add_unsafe(output_ring, (unsigned char)index);		// Print the character
-	ring_ret = ring_add_unsafe(output_ring, ':');
-	ring_ret = ring_add_unsafe(output_ring, char_count_array[index]);	// Print the count of character
-	ring_ret = ring_add_unsafe(output_ring, '\r');						// Newline/CR
-	ring_ret = ring_add_unsafe(output_ring, '\n');
-
-	index++;
+	// If we've wrapped around back to zero index, print a new page character
+	if(last_index >= index)
+	{
+		ring_ret = ring_add_unsafe(output_ring, (unsigned char)12);
+	}
+	// If we've found a nonzero character, print it
+	if(char_count_array[index] != 0)
+	{
+		ring_ret = ring_add_unsafe(output_ring, (unsigned char)index);		// Print the character
+		ring_ret = ring_add_unsafe(output_ring, ':');						// Print semicolon divider
+		ring_ret = ring_add_unsafe(output_ring, char_count_array[index]);	// Print the count of character
+		ring_ret = ring_add_unsafe(output_ring, '\r');						// Newline/CR
+		ring_ret = ring_add_unsafe(output_ring, '\n');
+	}
 
 	if(ring_ret == RING_FULL){ret = OUTPUT_FULL;}
 

@@ -22,7 +22,7 @@
 
 #define UART_INIT_DEFAULT								\
 			{.port = (UART_Type*)UART0,					\
-			.clock_freq = 69,							\
+			.clock_freq = CLOCK_GetPllFllSelClkFreq(),	\
 			.baudrate = 115200,							\
 			.parity_mode = UART_PARITY_DISABLED,		\
 			.enable_tx = true,							\

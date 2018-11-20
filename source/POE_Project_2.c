@@ -38,7 +38,7 @@
 #include "pin_mux.h"
 #include "clock_config.h"
 #include "MKL25Z4.h"
-#include "fsl_debug_console.h"
+//#include "fsl_debug_console.h"
 /* APPLICATION HEADERS */
 #include "char_counter.h"
 #include "output_generator.h"
@@ -48,6 +48,13 @@
 
 /* APPLCIATION DEFINES */
 #define IN_RING_SIZE	256
+#define FATAL_ERROR_DEBUG
+
+#ifdef FATAL_ERROR_DEBUG
+	#define FATAL_ERROR __asm__("BKPT");
+#else
+	#define FATAL_ERROR	NVIC_SystemReset();
+#endif
 
 /* Declare Buffers */
 char_counter input_array;
@@ -65,11 +72,20 @@ int main(void) {
 
     /* Initialize UART0 */
     uart_config init_uart0 = UART_INIT_DEFAULT;
-    uart_init(&init_uart0);
+    if(uart_init(&init_uart0) != UART_SUCCESS)
+    {
+    	FATAL_ERROR;
+    }
 
     /* Initialize Buffers */
-    ring_init(&output_ring, buffer, IN_RING_SIZE);
-    char_reset(input_array);
+    if(ring_init(&output_ring, buffer, IN_RING_SIZE) !=  RING_SUCCESS)
+    {
+    	FATAL_ERROR;
+    }
+    if(char_reset(input_array) != CHAR_SUCCESS)
+    {
+    	FATAL_ERROR;
+    }
 
     while(1)
     {

@@ -1,6 +1,10 @@
 #GITIGNORE
 
 # Ignore the MCUXpresso Debug Folder
-
 Debug/
-*.exe
+
+# Ignore any binaries built in unittesting
+Unittest/*.exe
+
+# Ignore launch files
+*.launch

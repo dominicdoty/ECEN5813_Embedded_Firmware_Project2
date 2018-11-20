@@ -18,25 +18,23 @@ uart_error uart_init(uart_config* init)
 	// CREDIT TO NXP, ORIGINAL @ fsl_uart.c
 	uart_error ret = UART_SUCCESS;
 
-	if(init == NULL)							//check for non-void init
+	if(init == NULL)										//check for non-void init
 	{
 		ret = UART_NULL_PTR;
 	}
-	else if((init->port != (UART_Type*)UART0) ||			//check for valid port
-			(init->port != (UART_Type*)UART1) ||
-			(init->port != (UART_Type*)UART2) )
+	else if(!((init->port == (UART_Type*)UART0) ||			//check for valid port
+			(init->port == (UART_Type*)UART1) 	||
+			(init->port == (UART_Type*)UART2)))
 	{
 		ret = UART_ILLEGAL_PORT;
 	}
-	else if((init->parity_mode > 3 ) ||			//check parity_mode valid
-			(init->parity_mode == 1 ))
+	else if(!(	(init->parity_mode == UART_PARITY_DISABLED) ||	//check parity_mode valid
+				(init->parity_mode == UART_PARITY_EVEN)		||
+				(init->parity_mode == UART_PARITY_ODD )))
 	{
 		ret = UART_ILLEGAL_PARITY;
 	}
-	else if((init->clock_freq != 32000)		||	//check clock frequency valid
-			(init->clock_freq != 4000000)	||
-			(init->clock_freq != XTAL0_F)	||
-			(init->clock_freq != XTAL0_F/2))
+	else if(init->clock_freq == 0)							//check clock frequency valid
 	{
 		ret = UART_ILLEGAL_FREQUENCY;
 	}
@@ -89,16 +87,7 @@ uart_error uart_init(uart_config* init)
 uart_error uart_transmit(UART_Type* uart_reg, unsigned char data)
 {
 	uart_error ret = UART_SUCCESS;
-
-	if(uart_transmit_full(uart_reg))
-	{
-		ret = UART_FAILURE;
-	}
-	else
-	{
-		uart_reg->D = data;
-	}
-
+	uart_reg->D = data;
 	return ret;
 }
 
@@ -110,16 +99,7 @@ bool uart_transmit_full(UART_Type* uart_reg)
 uart_error uart_receive(UART_Type* uart_reg, unsigned char* data)
 {
 	uart_error ret = UART_SUCCESS;
-
-	if(!uart_receive_full(uart_reg))
-	{
-		ret = UART_FAILURE;
-	}
-	else
-	{
-		*data = uart_reg->D;
-	}
-
+	*data = uart_reg->D;
 	return ret;
 }
 
