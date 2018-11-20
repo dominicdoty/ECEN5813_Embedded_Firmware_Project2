@@ -1,0 +1,29 @@
+1. For each implementation, what is the CPU doing when there are no characters waiting to be echoed? What is the behavior of 
+the GPIO toggle in the non-blocking implementation?
+Blocking: The processor spins in a while loop checking the "Receive buffer full flag" until there is valid data in the buffer.
+Non-Blocking: The processor continually toggles the GPIO pin until the interrupt is called. The GPIO toggle should be a 
+consistent frequency most of the time, but when an interrupt is generated, the frequency will vary slightly as the interrupt 
+is serviced.
+
+2. For each implementation trace the sequence of events that occur by listing, in order, the funtions called from the point 
+that a character sent to the FRDM board has been received until the point where the echoed character has been sent.
+Blocking:
+	uart_receive_full()	(repeating till true)
+	uart_receive()		(retrieves character from RX buffer)
+	uart_transmit_full()	(confirm TX buffer is empty)
+	uart_transmit()		(puts character into TX buffer)
+
+Non-Blocking:
+	UART0_IRQHandler()	(triggered by valid data RX interrupt)
+	uart_receive_full()	(verify data is ready in RX buffer)
+	uart_receive()		(retrieves character from RX buffer)
+	uart_transmit_full()	(confirm TX buffer is empty)
+	uart_transmit()		(puts character into TX buffer)
+
+3. Comment on the interface presented to the main() application code for blocking vs non-blocking variation. Which variation 
+is easier to code to?
+Both varitations present a similar code execution path, the difference is how they are called. In the blocking version, the 
+path is called from main over and over again, while in the non-blocking version, the path is called from the IRQ only when 
+needed. The IRQ version may be more difficult to understand since the execution path is not evident from the code (the IRQ is 
+called externally at an unknown time). Code complexity overall is very similar between the two implementations, since they 
+both use the same functions.
