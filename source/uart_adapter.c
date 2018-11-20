@@ -7,9 +7,6 @@
 
 #include "uart_adapter.h"
 
-// STATIC FUNCTIONS
-static bool uart_receive_full(UART_Type* uart_reg);
-
 // UART FUNCTIONS
 uart_error uart_init(uart_config* init)
 {
@@ -47,6 +44,7 @@ uart_error uart_init(uart_config* init)
 		// Enable the UART Clock
 		if(init->port == (UART_Type*)UART0)
 		{
+			CLOCK_SetLpsci0Clock(1);
 			CLOCK_EnableClock(kCLOCK_Uart0);
 		}
 		else if(init->port == (UART_Type*)UART1)
@@ -103,7 +101,7 @@ uart_error uart_receive(UART_Type* uart_reg, unsigned char* data)
 	return ret;
 }
 
-static bool uart_receive_full(UART_Type* uart_reg)
+bool uart_receive_full(UART_Type* uart_reg)
 {
 	return uart_reg->S1 & UART_S1_RDRF_MASK;
 }

@@ -8,6 +8,11 @@
 
 #include "output_generator.h"
 
+// STATIC FUNCTIONS
+static void stringify(uint16_t input, unsigned char* output_array);
+
+
+// GLOBAL FUNCTIONS
 output_error output_complete(char_counter char_count_array, ring_buffer_struct* output_ring)
 {
 	output_error ret = OUTPUT_SUCCESS;
@@ -82,14 +87,24 @@ output_error output_single_char_unsafe(char_counter char_count_array, ring_buffe
 	// If we've wrapped around back to zero index, print a new page character
 	if(last_index >= index)
 	{
-		ring_ret = ring_add_unsafe(output_ring, (unsigned char)12);
+		ring_ret = ring_add_unsafe(output_ring, '\f');
 	}
 	// If we've found a nonzero character, print it
 	if(char_count_array[index] != 0)
 	{
 		ring_ret = ring_add_unsafe(output_ring, (unsigned char)index);		// Print the character
 		ring_ret = ring_add_unsafe(output_ring, ':');						// Print semicolon divider
-		ring_ret = ring_add_unsafe(output_ring, char_count_array[index]);	// Print the count of character
+
+		unsigned char num_string_buffer[6];
+		uint8_t num_string_index = 0;
+
+		stringify(char_count_array[index], num_string_buffer);
+		while(num_string_buffer[num_string_index] != '\0')
+		{
+			ring_ret = ring_add_unsafe(output_ring, num_string_buffer[num_string_index]);	// Print the count of character
+			num_string_index++;
+		}
+
 		ring_ret = ring_add_unsafe(output_ring, '\r');						// Newline/CR
 		ring_ret = ring_add_unsafe(output_ring, '\n');
 	}
@@ -97,4 +112,28 @@ output_error output_single_char_unsafe(char_counter char_count_array, ring_buffe
 	if(ring_ret == RING_FULL){ret = OUTPUT_FULL;}
 
 	return ret;
+}
+
+static void stringify(uint16_t input, unsigned char* output_array)
+{
+	uint16_t temp = 10000;	//10k used here since we are using a uint16, the highest it gets is 65,535
+	// this is fixed with the current implementation of the function, hence not using a #define for this
+
+	// divide by powers of ten starting at 10k till you find a non-zero result (leave off leading 0's)
+	while(input/temp == 0)
+	{
+		temp /= 10;
+	}
+
+	uint8_t index = 0;
+	uint8_t result = 0;
+	while(temp != 0)
+	{
+		result = input/temp;									// Find what the number in the ten power place is (eg 100s, 10s place)
+		input = input - (result*temp);							// Remove that from the input number
+		output_array[index] = (unsigned char)(result + 48);	// Add the number in the ten power place to output string
+		temp /= 10;												// Move down to the next power place
+		index++;												// Move over to the next spot in output array
+	}
+	output_array[index] = '\0';								// End of string null
 }

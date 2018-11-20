@@ -47,7 +47,7 @@
 #include "uart_handler.h"
 
 /* APPLCIATION DEFINES */
-#define IN_RING_SIZE	256
+#define OUT_RING_SIZE	16
 #define FATAL_ERROR_DEBUG
 
 #ifdef FATAL_ERROR_DEBUG
@@ -59,7 +59,7 @@
 /* Declare Buffers */
 char_counter input_array;
 ring_buffer_struct output_ring;
-unsigned char buffer[IN_RING_SIZE];
+unsigned char buffer[OUT_RING_SIZE];
 
 
 int main(void) {
@@ -67,8 +67,6 @@ int main(void) {
   	/* Init board hardware. */
     BOARD_InitBootPins();			//Configures UART pins
     BOARD_InitBootClocks();			//Configure system clocks
-  	/* Init FSL debug console. */
-//    BOARD_InitDebugConsole();
 
     /* Initialize UART0 */
     uart_config init_uart0 = UART_INIT_DEFAULT;
@@ -78,7 +76,7 @@ int main(void) {
     }
 
     /* Initialize Buffers */
-    if(ring_init(&output_ring, buffer, IN_RING_SIZE) !=  RING_SUCCESS)
+    if(ring_init(&output_ring, buffer, OUT_RING_SIZE) !=  RING_SUCCESS)
     {
     	FATAL_ERROR;
     }
@@ -87,14 +85,44 @@ int main(void) {
     	FATAL_ERROR;
     }
 
+    output_error output_ret = OUTPUT_SUCCESS;
+    ring_error ring_ret = UART_SUCCESS;
+	unsigned char data = 0;
+
     while(1)
     {
     	// Generate character count for one character (actually 5 chars->  "e:5\r\n" )
-    	output_single_char(input_array, &output_ring);
-    	// Handle the UART several times
-    	for(uint8_t i = 0; i < 50; i++)
+    	output_ret = output_single_char(input_array, &output_ring);
+    	if(output_ret != OUTPUT_SUCCESS)
     	{
-    		uart_handler(init_uart0.port, input_array, &output_ring);
+    		FATAL_ERROR;
+    	}
+
+		// TX/RX till transmit buffer is empty
+    	ring_ret = RING_SUCCESS;
+    	while(1)
+    	{
+    		// Receive a Character
+    		if(uart_receive_full(init_uart0.port))
+    		{
+    			uart_receive(init_uart0.port, &data);
+    			char_add(input_array, data);
+    		}
+    		// Transmit a Character if the buffer isn't full
+    		if(!uart_transmit_full(init_uart0.port))
+    		{
+    			// Transmit a Character if one is successfully removed from the ring
+    			ring_ret = ring_remove(&output_ring, &data);
+    			if(ring_ret == RING_SUCCESS)
+    			{
+    				uart_transmit(init_uart0.port, data);
+    			}
+    			else
+    			{
+    				// No characters to transmit, break while(1)
+    				break;
+    			}
+    		}
     	}
     }
 

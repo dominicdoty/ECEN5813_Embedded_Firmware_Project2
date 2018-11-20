@@ -30,8 +30,9 @@ void uart_handler(UART_Type* uart_reg, char_counter in_buffer, ring_buffer_struc
 		}
 
 		// Receive a Character
-		if(uart_receive(uart_reg, &data) == UART_SUCCESS)
+		if(uart_receive_full(uart_reg))
 		{
+			uart_receive(uart_reg, &data);
 			char_add_unsafe(in_buffer, data);
 		}
 	}
