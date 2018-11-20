@@ -115,6 +115,7 @@ int main(void) {
     			ring_ret = ring_remove(&output_ring, &data);
     			if(ring_ret == RING_SUCCESS)
     			{
+    				if(data == '\f'){for(uint32_t i = 0; i < 100000; i++){}}
     				uart_transmit(init_uart0.port, data);
     			}
     			else
