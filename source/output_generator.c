@@ -39,6 +39,7 @@ output_error output_complete(char_counter char_count_array, ring_buffer_struct* 
 				ring_ret = stringify_output(char_count_array[index], output_ring);
 				ring_ret = ring_add_unsafe(output_ring, '\r');						// Newline/CR
 				ring_ret = ring_add_unsafe(output_ring, '\n');
+	    		UART0->C2 |= UART_C2_TIE_MASK;										// Output ready for transmit, enable TX int
 			}
 		}
 	}

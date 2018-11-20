@@ -10,6 +10,7 @@
 
 #include "ring_buffer.h"
 #include "char_counter.h"
+#include "MKL25Z4.h"
 
 typedef enum {OUTPUT_SUCCESS, OUTPUT_NULL_PTR, OUTPUT_FULL, OUTPUT_UNKNOWN_ERROR}output_error;
 

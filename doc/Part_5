@@ -1,0 +1,34 @@
+1. What is the CPU doing after the last character has been received and while the report is being printed?
+The CPU is being interrupted whenever the TX buffer becomes empty. It must then pull a character from the ring buffer, and 
+place it in the TX buffer. In between interrupts, the CPU returns to main where it toggles a GPIO pin.
+
+2. Baud rate aside, what limits the rate at which the application can process incoming characters? What happens when 
+characters come in more quickly than they can be processed?
+The limiting factor is the length of the interrupt service routine. If the routine is too long, it will still be running when 
+the next character is received, and eventually a receive buffer overflow will occur (a new character is received before the 
+old one is pulled from the RX buffer). The 1st character in the buffer at the time of the overflow will be lost (overwritten) 
+and a status flag is set in the UART to notify the user that this has occurred. In my application, it appears due to the 
+baud rate and ISR length, this is not possible. I've tested this by pasting in 65,535 a's and b's into my terminal and while 
+the printing doesn't work during the onslaught, afterwards it will show an accurate count.
+
+3. How does the size of the circular buffer affect report output behavior (especially during an onslaught)? What is an 
+appropriate buffer size to use for this application? Why?
+Circular buffer size has some affect on the printing results in an onslaught. If I paste a large amount of characters into the 
+terminal, the output buffer will fill up. This is because the added time processing the input characters makes it such that 
+output generation is much faster than actual transmission. The output generator then "catches" the transmitter, and the output 
+is garbled. This is because my output generator automatically stops when it runs into the end of the ring buffer, so it 
+usually ends with a partially printed output. I tried buffers as large as 2048 chars but the output generator was still able 
+to catch the transmitter in an onslaught.
+In normal operation I found that setting the ring buffer size to 512 chars was the smallest I could go before the output 
+generator would catch the transmitter. If all ASCII printable characters are entered, (95 chars) this results in an output 
+size of 476, which will not fill the 512 char buffer, hence why the output generator does not catch the transmitter. I suspect 
+this is a baudrate limitation which causes transmission to take a very long time on the scale of the processor.
+To address these issues, I added a check to my main loop, which checks if the last output generation routine resulted in a 
+full ring buffer. If it did, and the transmitter is also not currently transmitting, the output is regenerated. This causes 
+a full clean output after the onslaught has ended.
+I think an appropriate buffer size for this application is large enough to hold the largest possible number of characters that 
+might be generated at a time (512 here). In this case, the ring buffer is not a very useful construct, because the UART 
+transmission is so slow compared to output generation, that you must allocate space to hold the entire output. Ideally if the 
+transmitter was better speed matched to the output generation, a very small ring buffer of 128 or fewer chars could be used 
+since adding and pulling from the buffer would occur at similar rates. As is, the output generator can generate ~470 
+characters before the UART can transmit more than a handful.

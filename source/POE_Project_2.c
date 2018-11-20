@@ -47,7 +47,7 @@
 #include "uart_handler.h"
 
 /* APPLCIATION DEFINES */
-#define OUT_RING_SIZE	2048
+#define OUT_RING_SIZE	512
 #define FATAL_ERROR_DEBUG
 
 #ifdef FATAL_ERROR_DEBUG
@@ -100,15 +100,12 @@ int main(void) {
 			NVIC_EnableIRQ(UART0_IRQn);
 
     		output_ret = output_complete(input_array, &output_ring);
-
-    		UART0->C2 |= UART_C2_TIE_MASK;	// Output ready for transmit, enable TX int
     	}
     	if((output_ret == OUTPUT_FULL) && !(UART0->C2 & UART_C2_TIE_MASK))
     	{
     		// If the last output generation resulted in a full buffer, and we're done transmitting,
     		// generate a clean output set with the now empty buffer
     		output_ret = output_complete(input_array, &output_ring);
-    		UART0->C2 |= UART_C2_TIE_MASK;	// Output ready for transmit, enable TX int
     	}
     }
 
